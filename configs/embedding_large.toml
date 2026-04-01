@@ -1,0 +1,43 @@
+# configs/embedding_large.toml
+# Configuration d'un modèle d'embedding de grande taille (~ BERT-large)
+# Chapitre 1 — Exemple de configuration plus large
+
+[model]
+d_model = 1024
+n_heads = 16
+n_layers = 24
+d_ff = 4096
+max_seq_len = 512
+vocab_size = 32000
+dropout = 0.1
+pooling = "mean"
+pos_encoding = "rope"
+activation = "swiglu"
+
+[training]
+batch_size = 128
+learning_rate = 1e-5
+weight_decay = 0.01
+warmup_steps = 2000
+max_steps = 100000
+num_epochs = 5             # > 0 active le mode époques (ignore max_steps) ; 0 = mode étapes
+gradient_clip = 1.0
+mixed_precision = "bf16"
+grad_accum_steps = 4      # Simule un batch effectif de 512
+device = "auto"            # "auto" | "cpu" | "cuda" | "cuda:0" | "cuda:1" | "mps"
+
+[loss]
+type = "matryoshka"
+temperature = 0.05
+margin = 0.5
+
+[data]
+train_path = "data/pairs_train.jsonl"
+val_path = "data/pairs_val.jsonl"
+num_workers = 8
+
+[logging]
+project = "embedding-from-scratch"
+run_name = "large-matryoshka-v1"
+log_every = 100
+eval_every = 2000

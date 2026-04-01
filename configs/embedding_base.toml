@@ -1,0 +1,43 @@
+# configs/embedding_base.toml
+# Configuration d'un modèle d'embedding de taille base (~ BERT-base)
+# Chapitre 1 — Gestion de la configuration avec des fichiers TOML
+
+[model]
+d_model = 768
+n_heads = 12
+n_layers = 6
+d_ff = 3072
+max_seq_len = 512
+vocab_size = 32000
+dropout = 0.1
+pooling = "mean"           # "mean" | "cls" | "weighted_mean"
+pos_encoding = "learned"   # "learned" | "sinusoidal" | "rope"
+activation = "gelu"        # "gelu" | "relu" | "swiglu" | "geglu"
+
+[training]
+batch_size = 256
+learning_rate = 2e-5
+weight_decay = 0.01
+warmup_steps = 200
+max_steps = 1200
+num_epochs = 120             # > 0 active le mode époques (ignore max_steps) ; 0 = mode étapes
+gradient_clip = 1.0
+mixed_precision = "bf16"   # "bf16" | "fp16" | "fp32"
+grad_accum_steps = 1
+device = "cuda"            # "auto" | "cpu" | "cuda" | "cuda:0" | "cuda:1" | "mps"
+
+[loss]
+type = "mnr"               # "contrastive" | "triplet" | "mnr" | "matryoshka"
+temperature = 0.05
+margin = 0.5               # Utilisé pour contrastive et triplet uniquement
+
+[data]
+train_path = "data/pairs_train.jsonl"
+val_path = "data/pairs_val.jsonl"
+num_workers = 4
+
+[logging]
+project = "embedding-from-scratch"
+run_name = "base-mnr-v1"
+log_every = 100
+eval_every = 1000
